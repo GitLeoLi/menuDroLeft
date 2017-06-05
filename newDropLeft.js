@@ -47,3 +47,26 @@ function dropLeft(itemClass){
   })
 }
 fn();
+//gloal.less
+// [class^='btn'] .sub_lv.dropLeft{
+//   width:180px;
+//   left:-100%;
+//   float:right;
+//   >li{
+// 	float:right;
+//   }
+//   >li.parent>span:after{content:'\f104'}
+// }
+//MainNav.less
+// .parent > span:after {
+//     content: '\f105';
+//     font-family: FontAwesome;
+//     float: right;
+//     padding-top: 1px;
+// }
+//.parent_left > span:after {
+//      content: '\f104';
+//      font-family: FontAwesome;
+//      float: right;
+//      padding-top: 1px;
+// }
