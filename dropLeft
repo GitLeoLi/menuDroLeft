@@ -1,0 +1,126 @@
+//對於菜單欄menu下拉方向的處理
+
+
+/*-------------navi.php-----------*/ //注意class
+//<li class="btn09"><a href="#"><span>校友會</span></a>
+//<div class="dropdown"><!-- Sub lv wrap with class: dropdown -->
+//    <ul class="sub">
+//    <li><a href="index.php">HOME</a></li>
+//<li><a href="template_00.php">Template1</a></li>
+//<li><a href="template_01.php">Template2</a></li>
+//<li><a href="template_02.php">Template3</a></li>
+//<li><a href="template_03.php">Template4</a></li>
+//<li><a href="gallery.php">Gallery</a></li>
+//
+//<li class="parent"><span>demo-nav LV2</span>
+//
+//<ul class="sub_lv"><!-- Sub lv2 wrap with class: sub_lv -->
+//    <li><a href="#">demo-nav LV3</a></li>
+//<li><a href="#">demo-nav LV3</a></li>
+//
+//<li class="parent"><span>demo-nav LV3</span>
+//<ul class="sub_lv">
+//    <li><a href="#">demo-nav LV4</a></li>
+//<li><a href="#">demo-nav LV4</a></li>
+//</ul>
+//</li>
+//
+//<li><a href="#">demo-nav LV3</a></li>
+//<li><a href="#">demo-nav LV3</a></li>
+//</ul>
+//</li>
+//</ul>
+//</div>
+//</li>
+
+
+/*-------------global.less-----------*/
+//[class^='btn'] .sub_lv.dropLeft{
+//    width:180px;
+//    left:-100%;
+//    float:right;
+//>li{
+//        float:right;
+//    }
+//>li.parent>span:after{content:'\f104'}
+//  @media screen and (max-width:767px){
+//        width:100%;
+//        left:auto;
+//        right:auto;
+//        float:left;
+//    >li{
+//            float:left;
+//        }
+//    >li.parent>span:after{content:'\f107'}
+//    }
+//}
+
+
+/*-------------MainNav.less-----------*/
+//.parent > span:after {
+//    content: '\f105';
+//    font-family: FontAwesome;
+//    float: right;
+//    padding-top: 1px;
+//}
+//.parent_left > span:after {
+//    content: '\f104';
+//    font-family: FontAwesome;
+//    float: right;
+//    padding-top: 1px;
+//         @media screen and (max-width:767px){
+//        content:'\f107'!important;
+//    }
+//}
+
+
+/*-------------header.js-----------*/
+function fn(){
+    var items=[];
+    $("[class^='btn']").each(function(){
+        var item=this.getAttribute('class');
+        $.inArray(item,items)==-1 && items.push('.'+item);
+    });
+    $.each(items,function(index,itemClass){
+        dropLeft(itemClass);
+    })
+}
+function dropLeft(itemClass){
+    $(itemClass+'>div>.sub').on('mouseover',function(e){
+        $(this).children('.dropdown').css("display","block");
+        var target= e.target;
+        var liWidth=target.clientWidth;
+        var width_01=window.innerWidth;
+
+        var width_02=this.getBoundingClientRect().left-document.documentElement.clientLeft+document.documentElement.scrollLeft;
+
+        if(width_01-width_02<3*liWidth) {
+            if ($(target).parent().hasClass('parent') || $(target).parent().hasClass('parent_left')) {
+                $(target).parent().removeClass("parent").addClass("parent_left");
+                $ul = $(target).parent().children('.sub_lv');
+                $ul.css("display", "block");
+                $ul.addClass("dropLeft");
+            }
+        }
+        else{
+            if($(target).parent().hasClass('parent') || $(target).parent().hasClass('parent_left')){
+                $(target).parent().removeClass("parent_left").addClass("parent");
+                $ul=$(target).parent().children('.sub_lv');
+                $ul.css("display","block");
+            }
+        }
+    })
+    $(itemClass+'>div>.sub').on('mouseleave',function(e){
+        var target= e.target;
+        var t=$(target);
+        do{
+            t=t.parent();
+        }while(!t.hasClass("sub"));
+        t.find(".sub_lv").css("display","none");
+        t.find(".dropLeft").removeClass("dropLeft").css("display","none");
+    })
+    $(itemClass+'>div>.sub .parent').on("mouseleave",function(){
+        $(this).parent().find(".sub_lv").css("display","none");
+    })
+}
+fn();
